@@ -1,0 +1,25 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>org.jetbrains.plugins.template</id>
+    <name>Form Helper</name>
+    <vendor>JetBrains</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+
+
+    <actions>
+        <action id="com.solanteq.solar.plugin.converter.ConvertJsonToKotlinDSLAction"
+                class="com.solanteq.solar.plugin.converter.ConvertJsonToKotlinDSLAction"
+                text="Convert JSON file to Kotlin DSL file">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
+
+
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="FileConversionNotification"
+                           displayType="BALLOON"
+                           key="notification.group.name"/>
+    </extensions>
+</idea-plugin>
