@@ -8,8 +8,8 @@
 
 
     <actions>
-        <action id="com.solanteq.solar.plugin.converter.ConvertJsonToKotlinDSLAction"
-                class="com.solanteq.solar.plugin.converter.ConvertJsonToKotlinDSLAction"
+        <action id="com.solanteq.solar.plugin.converter.action.ConvertJsonToKotlinDSLAction"
+                class="com.solanteq.solar.plugin.converter.action.ConvertJsonToKotlinDSLAction"
                 text="Convert JSON file to Kotlin DSL file">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </action>
