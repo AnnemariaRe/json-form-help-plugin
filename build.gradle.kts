@@ -27,7 +27,7 @@ repositories {
 dependencies {
 //    implementation(libs.annotations)
     implementation("org.springframework:spring-core:6.1.2")
-
+    implementation("org.springframework:spring-context:6.1.2")
 
 }
 

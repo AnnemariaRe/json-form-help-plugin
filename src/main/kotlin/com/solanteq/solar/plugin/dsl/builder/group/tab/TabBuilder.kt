@@ -6,8 +6,8 @@ import com.solanteq.solar.plugin.json.schema.group.tab.Tab
 
 class TabBuilder(
     private val name: String,
-    private val form: String,
-    private val visibleWhen: String
+    private val form: String? = null,
+    private val visibleWhen: String? = null
 ) : AbstractBuilder<Tab>() {
 
     private var paramBuilders = mutableListOf<FormParameterBuilder>()

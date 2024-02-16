@@ -11,10 +11,10 @@ abstract class AbstractLink()
 @JsonDeserialize
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class Link @JsonCreator constructor(
-    @JsonProperty("name") name: String? = null,
-    @JsonProperty("form") group: String? = null,
-    @JsonProperty("url") url: String? = null,
-    @JsonProperty("icon") icon: String? = null,
+    @JsonProperty("name") val name: String? = null,
+    @JsonProperty("form") val group: String? = null,
+    @JsonProperty("url") val url: String? = null,
+    @JsonProperty("icon") val icon: String? = null,
     @JsonSetter(nulls = Nulls.AS_EMPTY)
     @JsonProperty("params") val params: List<RequestParameter>? = emptyList()
 ) : AbstractLink()

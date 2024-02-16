@@ -2,6 +2,7 @@ package com.solanteq.solar.plugin.dsl.builder.action
 
 import com.solanteq.solar.plugin.dsl.builder.AbstractBuilder
 import com.solanteq.solar.plugin.dsl.builder.request.parameter.InlineParameterBuilder
+import com.solanteq.solar.plugin.dsl.builder.request.parameter.RequestParameterBuilder
 import com.solanteq.solar.plugin.json.schema.action.InlineAction
 import com.solanteq.solar.plugin.json.schema.action.redirect.Redirect
 import com.solanteq.solar.plugin.json.schema.request.InlineRequest
