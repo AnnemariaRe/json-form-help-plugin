@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.solanteq.solar.plugin.json.schema.action.CustomAction
 import com.solanteq.solar.plugin.json.schema.action.InlineAction
 import com.solanteq.solar.plugin.json.schema.deserializer.CustomActionDeserializer
-import com.solanteq.solar.plugin.json.schema.deserializer.ExpressionDeserializer
 import com.solanteq.solar.plugin.json.schema.field.FieldRow
 import com.solanteq.solar.plugin.json.schema.group.AbstractGroup
 

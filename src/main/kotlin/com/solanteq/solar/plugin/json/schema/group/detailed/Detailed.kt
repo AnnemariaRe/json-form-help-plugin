@@ -2,7 +2,6 @@ package com.solanteq.solar.plugin.json.schema.group.detailed
 
 import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.solanteq.solar.plugin.json.schema.deserializer.ExpressionDeserializer
 import com.solanteq.solar.plugin.json.schema.deserializer.FormRequestDeserializer
 import com.solanteq.solar.plugin.json.schema.parameter.FormParameter
 import com.solanteq.solar.plugin.json.schema.group.RowGroup

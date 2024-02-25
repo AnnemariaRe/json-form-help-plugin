@@ -9,7 +9,7 @@ import com.solanteq.solar.plugin.json.schema.field.FieldType
 abstract class AbstractFieldBuilder<B : AbstractFieldBuilder<B, C>, C : AbstractField>(
     private val name: String,
     private val type: FieldType,
-    private val size: Int
+    private val size: Int? = null
 ) : AbstractBuilder<C>() {
     private var sourceBuilder: FormParameterBuilder? = null
 

@@ -6,7 +6,7 @@ import com.solanteq.solar.plugin.json.schema.group.RowGroup
 
 class RowGroupBuilder(
     private val name: String,
-    private val size: Int = AbstractGroup.DEFAULT_GROUP_SIZE
+    private val size: Int
 ): AbstractGroupBuilder<RowGroupBuilder, RowGroup>(name, size) {
 
     private var rowBuilders = mutableListOf<FieldRowBuilder>()

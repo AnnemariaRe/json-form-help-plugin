@@ -8,7 +8,7 @@ import com.solanteq.solar.plugin.json.schema.field.FieldType
 class FieldBuilder(
     private val name: String,
     private val type: FieldType,
-    private val fieldSize: Int,
+    private val fieldSize: Int? = null,
     private val editable: Boolean? = null,
     private val editableWhen: String? = null,
     private val required: Boolean? = null,

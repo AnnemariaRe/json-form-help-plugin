@@ -1,4 +1,4 @@
-package com.solanteq.solar.plugin.dsl.converter.field
+package com.solanteq.solar.plugin.dsl.converter.field.link
 
 import com.solanteq.solar.plugin.converter.AbstractDslConverter
 import com.solanteq.solar.plugin.dsl.builder.field.LinkBuilder

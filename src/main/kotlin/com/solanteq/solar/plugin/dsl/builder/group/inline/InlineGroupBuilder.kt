@@ -13,7 +13,7 @@ import com.solanteq.solar.plugin.json.schema.group.inline.InlineGroup
 
 class InlineGroupBuilder(
     private val name: String,
-    private val size: Int = AbstractGroup.DEFAULT_GROUP_SIZE
+    private val size: Int
 ) : AbstractGroupBuilder<InlineGroupBuilder, InlineGroup>(name, size) {
 
     private var sourceBuilder: InlineRequestBuilder? = null

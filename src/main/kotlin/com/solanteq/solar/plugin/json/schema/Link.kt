@@ -5,10 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.solanteq.solar.plugin.json.schema.parameter.RequestParameter
 import com.solanteq.solar.plugin.json.schema.request.AbstractRequest
 
-
-abstract class AbstractLink()
-
-@JsonDeserialize
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class Link @JsonCreator constructor(
     @JsonProperty("name") val name: String? = null,
@@ -17,4 +13,4 @@ class Link @JsonCreator constructor(
     @JsonProperty("icon") val icon: String? = null,
     @JsonSetter(nulls = Nulls.AS_EMPTY)
     @JsonProperty("params") val params: List<RequestParameter>? = emptyList()
-) : AbstractLink()
+)

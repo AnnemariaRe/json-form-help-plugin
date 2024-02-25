@@ -3,12 +3,9 @@ package com.solanteq.solar.plugin.json.schema.field
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.solanteq.solar.plugin.json.schema.AbstractLink
 import com.solanteq.solar.plugin.json.schema.Link
-import com.solanteq.solar.plugin.json.schema.deserializer.ExpressionDeserializer
 import com.solanteq.solar.plugin.json.schema.deserializer.FieldDeserializer
 import com.solanteq.solar.plugin.json.schema.deserializer.FormRequestDeserializer
-import com.solanteq.solar.plugin.json.schema.deserializer.LinkDeserializer
 import com.solanteq.solar.plugin.json.schema.group.inline.RowStyle
 import com.solanteq.solar.plugin.json.schema.request.FormRequest
 
@@ -36,8 +33,7 @@ class Field(
     @JsonProperty("unique") val unique: Boolean? = null,
     @JsonProperty("alignRight") val alignRight: Boolean? = null,
     @JsonProperty("initDropDown") val initDropDown: Boolean? = null,
-    @JsonDeserialize(using = LinkDeserializer::class)
-    @JsonProperty("link") val link: AbstractLink? = null,
+    @JsonProperty("link") val link: Link? = null,
     @JsonProperty("style") val style: RowStyle? = null,
     @JsonProperty("sortable") val sortable: Boolean? = null,
     @JsonProperty("altFieldName") val altFieldName: String? = null,

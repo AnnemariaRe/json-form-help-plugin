@@ -6,7 +6,7 @@ import com.solanteq.solar.plugin.json.schema.group.TabGroup
 
 class TabGroupBuilder(
     private val name: String,
-    private val size: Int = AbstractGroup.DEFAULT_GROUP_SIZE
+    private val size: Int
 ) : AbstractGroupBuilder<TabGroupBuilder, TabGroup>(name, size) {
 
     private var tabBuilders = mutableListOf<TabBuilder>()

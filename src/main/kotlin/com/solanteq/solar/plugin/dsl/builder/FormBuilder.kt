@@ -31,8 +31,6 @@ class FormBuilder(
 
     private var reloadType = ReloadType.FORM_AND_INLINE
 
-    private var pollPeriod: Long? = null
-
     internal fun sourceBuilder(sourceBuilder: FormRequestBuilder?) = apply {
         this.sourceBuilder = sourceBuilder
     }
@@ -67,9 +65,5 @@ class FormBuilder(
 
     internal fun reloadType(reloadType: ReloadType) = apply {
         this.reloadType = reloadType
-    }
-
-    internal fun pollPeriod(pollPeriod: Long?) = apply {
-        this.pollPeriod = pollPeriod
     }
 }

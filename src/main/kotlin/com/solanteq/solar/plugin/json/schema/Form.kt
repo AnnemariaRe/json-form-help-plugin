@@ -3,8 +3,9 @@ package com.solanteq.solar.plugin.json.schema
 import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.solanteq.solar.plugin.json.schema.action.CustomAction
+import com.solanteq.solar.plugin.json.schema.action.ReloadType
 import com.solanteq.solar.plugin.json.schema.deserializer.*
-import com.solanteq.solar.plugin.json.schema.expression.AbstractExpression
+import com.solanteq.solar.plugin.json.schema.expression.Expression
 import com.solanteq.solar.plugin.json.schema.group.AbstractGroup
 import com.solanteq.solar.plugin.json.schema.group.GroupRow
 import com.solanteq.solar.plugin.json.schema.request.FormRequest
@@ -26,7 +27,7 @@ data class Form @JsonCreator constructor(
     @JsonProperty("removableWhen") val removableWhen: String? = null,
     @JsonProperty("editable") val editable: Boolean? = null,
     @JsonProperty("editableWhen") val editableWhen: String? = null,
-    @JsonProperty("reloadType") val reloadType: String? = null,
+    @JsonProperty("reloadType") val reloadType: ReloadType = ReloadType.FORM_AND_INLINE,
     @JsonDeserialize(using = FormRequestDeserializer::class)
     @JsonProperty("save") val save: FormRequest? = null,
     @JsonProperty("breadcrumb") val breadcrumb: Breadcrumb? = null,
@@ -34,7 +35,7 @@ data class Form @JsonCreator constructor(
     @JsonDeserialize(using = CustomActionDeserializer::class)
     @JsonProperty("actions") val actions: List<CustomAction>? = emptyList(),
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    @JsonProperty("expressions") val expressions: List<AbstractExpression>? = emptyList(),
+    @JsonProperty("expressions") val expressions: List<Expression>? = emptyList(),
     @JsonSetter(nulls = Nulls.AS_EMPTY)
     @JsonProperty("groups") val groups: List<AbstractGroup>? = emptyList(),
     @JsonSetter(nulls = Nulls.AS_EMPTY)

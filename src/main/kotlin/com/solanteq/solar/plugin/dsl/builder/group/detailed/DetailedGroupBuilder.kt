@@ -9,7 +9,7 @@ import com.solanteq.solar.plugin.json.schema.group.detailed.DetailedGroup
 
 class DetailedGroupBuilder(
     private val name: String,
-    private val size: Int = AbstractGroup.DEFAULT_GROUP_SIZE
+    private val size: Int
 ): AbstractGroupBuilder<DetailedGroupBuilder, DetailedGroup>(name, size) {
 
     private var sourceBuilder: FormRequestBuilder? = null

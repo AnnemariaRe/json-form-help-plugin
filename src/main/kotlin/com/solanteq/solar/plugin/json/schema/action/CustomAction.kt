@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.solanteq.solar.plugin.json.schema.request.InlineRequest
 import com.solanteq.solar.plugin.json.schema.action.redirect.Redirect
-import com.solanteq.solar.plugin.json.schema.deserializer.CustomActionDeserializer
-import com.solanteq.solar.plugin.json.schema.deserializer.ExpressionDeserializer
 import com.solanteq.solar.plugin.json.schema.parameter.RequestParameter
 
 abstract class AbstractCustomAction(
