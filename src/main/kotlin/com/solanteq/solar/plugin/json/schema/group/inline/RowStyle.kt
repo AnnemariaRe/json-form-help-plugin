@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class RowStyle @JsonCreator constructor(
-    @JsonProperty("info") var info: String? = null,
-    @JsonProperty("success") var success: String? = null,
-    @JsonProperty("warning") var warning: String? = null,
-    @JsonProperty("error") var error: String? = null,
-    @JsonProperty("muted") var muted: String? = null
+    @JsonProperty("info") val info: String? = null,
+    @JsonProperty("success") val success: String? = null,
+    @JsonProperty("warning") val warning: String? = null,
+    @JsonProperty("error") val error: String? = null,
+    @JsonProperty("muted") val muted: String? = null
 )

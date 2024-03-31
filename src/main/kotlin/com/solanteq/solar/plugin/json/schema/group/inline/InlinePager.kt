@@ -3,6 +3,8 @@ package com.solanteq.solar.plugin.json.schema.group.inline
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.solanteq.solar.plugin.json.schema.deserializer.FormRequestDeserializer
 import com.solanteq.solar.plugin.json.schema.request.FormRequest
 
 
@@ -10,6 +12,7 @@ import com.solanteq.solar.plugin.json.schema.request.FormRequest
 class InlinePager @JsonCreator constructor(
     @JsonProperty("itemsPerPage") val itemsPerPage: Int,
     @JsonProperty("maxSize") val maxSize: Int = DEFAULT_MAX_SIZE,
+    @JsonDeserialize(using = FormRequestDeserializer::class)
     @JsonProperty("countRequest") var countRequest: FormRequest? = null,
     @JsonProperty("maxCount") val maxCount: Int? = null,
     @JsonProperty("skipCount") val skipCount: Boolean? = null,

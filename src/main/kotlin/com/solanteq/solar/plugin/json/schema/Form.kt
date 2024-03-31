@@ -27,7 +27,7 @@ data class Form @JsonCreator constructor(
     @JsonProperty("removableWhen") val removableWhen: String? = null,
     @JsonProperty("editable") val editable: Boolean? = null,
     @JsonProperty("editableWhen") val editableWhen: String? = null,
-    @JsonProperty("reloadType") val reloadType: ReloadType = ReloadType.FORM_AND_INLINE,
+    @JsonProperty("reloadType") val reloadType: ReloadType? = ReloadType.FORM_AND_INLINE,
     @JsonDeserialize(using = FormRequestDeserializer::class)
     @JsonProperty("save") val save: FormRequest? = null,
     @JsonProperty("breadcrumb") val breadcrumb: Breadcrumb? = null,
@@ -39,5 +39,6 @@ data class Form @JsonCreator constructor(
     @JsonSetter(nulls = Nulls.AS_EMPTY)
     @JsonProperty("groups") val groups: List<AbstractGroup>? = emptyList(),
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    @JsonProperty("groupRows") val groupRows: List<GroupRow>? = emptyList()
+    @JsonProperty("groupRows") val groupRows: List<GroupRow>? = emptyList(),
+    @JsonProperty("pollPeriod") val pollPeriod: Long? = null
 )

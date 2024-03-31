@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.*
 data class PostAction @JsonCreator constructor(
     @JsonProperty("showSuccess") val showSuccess: Boolean = true,
     @JsonProperty("reloadOnComplete") val reloadOnComplete: Boolean = false,
-    @JsonProperty("reloadType") val reloadType: ReloadType = ReloadType.FORM,
+    @JsonProperty("reloadType") val reloadType: ReloadType? = ReloadType.FORM,
     @JsonSetter(nulls = Nulls.AS_EMPTY)
     @JsonProperty("reloadGroups") val reloadGroups: List<String>? = emptyList()
 )

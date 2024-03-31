@@ -1,5 +1,6 @@
 package com.solanteq.solar.plugin.converter.action
 
+import KOTLIN_DSL_EXTENSION
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import com.fasterxml.jackson.databind.exc.ValueInstantiationException
@@ -7,14 +8,17 @@ import com.intellij.codeInspection.InspectionsReportConverter.ConversionExceptio
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.codeStyle.CodeStyleManager
 import com.solanteq.solar.plugin.BalloonNotifier
+import com.solanteq.solar.plugin.action.generateDsl
 import com.solanteq.solar.plugin.json.schema.Form
 import java.io.IOException
 
-
-class ConvertJsonToKotlinDSLAction : AnAction() {
+class ConvertJsonToKotlinDSLAction: AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
@@ -26,23 +30,27 @@ class ConvertJsonToKotlinDSLAction : AnAction() {
             val jsonString = document.text
 
             val mapper = ObjectMapper()
-            var result = Form()
+            val result: Form
             try {
                 result = mapper.readValue(jsonString, Form::class.java)
+
                 BalloonNotifier().notifySuccess(project, "Successfuly converted!")
             } catch (ex: UnrecognizedPropertyException) {
                 BalloonNotifier().notifyError(project, "Incorrect JSON configuration: <br> " +
                     ex.message?.substringBefore('('))
+                throw ConversionException(ex.message, ex)
             } catch (ex: ValueInstantiationException) {
                 val firstPartMessage = ex.message?.substringAfter("problem:")?.substringBefore(':')
                 val secondPartMessage = ex.message?.substringAfter("parameter")?.substringBefore("at")
                 BalloonNotifier().notifyError(
                     project, "Incorrect JSON configuration: <br> $firstPartMessage:<b>$secondPartMessage<b>"
                 )
+                throw ConversionException(ex.message, ex)
             } catch (ex: Exception) {
                 BalloonNotifier().notifyError(
                     project, "Incorrect JSON configuration: <br> " + ex.message
                 )
+                throw ConversionException(ex.message, ex)
             }
 
             // rename file
@@ -50,7 +58,7 @@ class ConvertJsonToKotlinDSLAction : AnAction() {
 
             WriteCommandAction.runWriteCommandAction(project) {
                 try {
-                   // selectedFile.rename(this, "${selectedFile.nameWithoutExtension}.$KOTLIN_DSL_EXTENSION")
+                    selectedFile.rename(this, "${selectedFile.nameWithoutExtension}.$KOTLIN_DSL_EXTENSION")
                 } catch (ex: IOException) {
                     throw ConversionException(
                         "Error while renaming file `${selectedFile.name}` to " +
@@ -61,19 +69,28 @@ class ConvertJsonToKotlinDSLAction : AnAction() {
             }
 
             // set text
-//            WriteCommandAction.runWriteCommandAction(project) {
-//                try {
-//                    document.setText(
-//                        result.toString()
-//                    )
-//                } catch (ex: IOException) {
-//                    throw ConversionException(
-//                        "Error while setting DSL code to `${selectedFile.name}`",
-//                        ex
-//                    )
-//                }
-//            }
+            WriteCommandAction.runWriteCommandAction(project) {
+                try {
+                    document.setText(
+                        result.generateDsl()
+                    )
 
+                    val documentManager = PsiDocumentManager.getInstance(project)
+                    documentManager.commitDocument(document)
+
+                    val psiFile = e.getData(LangDataKeys.PSI_FILE)
+                    if (psiFile != null) {
+//                        val importPath = ImportPath.fromString("com.solanteq.solar.air.tamandua.dsl.builder.*")
+//                        addImportToPsiFile(e.project!!, psiFile, importPath)
+                        CodeStyleManager.getInstance(project).reformat(psiFile)
+                    }
+                } catch (ex: IOException) {
+                    throw ConversionException(
+                        "Error while setting DSL code to `${selectedFile.name}`",
+                        ex
+                    )
+                }
+            }
         } catch (e: ConversionException) {
             throw ConversionException(
                 "Problem running conversion plugin: ${e.message}\n" +
@@ -91,4 +108,13 @@ class ConvertJsonToKotlinDSLAction : AnAction() {
         e.presentation.isEnabled = isJsonFile && isFormPath
         e.presentation.isVisible = isJsonFile && isFormPath
     }
+
+//    private fun addImportToPsiFile(project: Project, psiFile: PsiFile, importText: ImportPath) {
+//        val psiFactory = KtPsiFactory(project)
+//        val importStatement = psiFactory.createImportDirective(importText)
+//
+//        if (psiFile.children.none { it is KtImportList }) {
+//            psiFile.add(importStatement)
+//        }
+//    }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.solanteq.solar.plugin.json.schema.request.InlineRequest
 import com.solanteq.solar.plugin.json.schema.action.redirect.Redirect
+import com.solanteq.solar.plugin.json.schema.deserializer.FormRequestDeserializer
+import com.solanteq.solar.plugin.json.schema.deserializer.InlineRequestDeserializer
 import com.solanteq.solar.plugin.json.schema.parameter.RequestParameter
 
 abstract class AbstractCustomAction(
@@ -14,6 +16,7 @@ abstract class AbstractCustomAction(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class CustomAction @JsonCreator constructor(
     @JsonProperty("name") name: String,
+    @JsonDeserialize(using = InlineRequestDeserializer::class)
     @JsonProperty("request") val request: InlineRequest? = null,
     @JsonSetter(nulls = Nulls.AS_EMPTY)
     @JsonProperty("params") val params: List<RequestParameter>? = emptyList(),

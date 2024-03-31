@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class Breadcrumb @JsonCreator constructor(
     @JsonProperty("parentForm") val parentForm: String? = null,
     @JsonProperty("parentId") val parentId: String? = null,
-    @JsonProperty("parentFormExp") val parentFormExp: String? = null,
-    @JsonProperty("parentIdExp") val parentIdExp: String? = null,
+    @JsonProperty("parentFormExp") val parentFormExpression: String? = null,
+    @JsonProperty("parentIdExp") val parentIdExpression: String? = null,
     @JsonProperty("labelField") val labelField: String? = null
 )

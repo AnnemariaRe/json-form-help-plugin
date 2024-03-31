@@ -28,6 +28,9 @@ dependencies {
 //    implementation(libs.annotations)
     implementation("org.springframework:spring-core:6.1.2")
     implementation("org.springframework:spring-context:6.1.2")
+    implementation("com.squareup:kotlinpoet:1.4.3")
+//    implementation("org.jetbrains.kotlin:kotlin-compiler:1.3.70")
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.0")
 
 }
 

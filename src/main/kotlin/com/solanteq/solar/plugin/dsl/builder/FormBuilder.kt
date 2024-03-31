@@ -29,7 +29,7 @@ class FormBuilder(
 
     private var groupRowBuilders = mutableListOf<GroupRowBuilder>()
 
-    private var reloadType = ReloadType.FORM_AND_INLINE
+    private var reloadType: ReloadType? = ReloadType.FORM_AND_INLINE
 
     internal fun sourceBuilder(sourceBuilder: FormRequestBuilder?) = apply {
         this.sourceBuilder = sourceBuilder
@@ -63,7 +63,7 @@ class FormBuilder(
         this.groupRowBuilders = groupRowBuilders.toMutableList()
     }
 
-    internal fun reloadType(reloadType: ReloadType) = apply {
+    internal fun reloadType(reloadType: ReloadType?) = apply {
         this.reloadType = reloadType
     }
 }

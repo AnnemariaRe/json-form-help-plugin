@@ -41,5 +41,6 @@ class Field(
     @JsonProperty("optionDisplayField") val optionDisplayField: String? = null,
     @JsonProperty("clearable") val clearable: Boolean? = null,
     @JsonProperty("trimWhitespaces") val trimWhitespaces: Boolean? = null,
-    @JsonProperty("format") val format: String? = null
+    @JsonProperty("format") val format: String? = null,
+    @JsonProperty("form") val form: String? = null
 ) : AbstractField(name)
