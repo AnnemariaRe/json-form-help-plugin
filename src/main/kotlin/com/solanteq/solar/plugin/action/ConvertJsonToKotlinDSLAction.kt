@@ -1,4 +1,4 @@
-package com.solanteq.solar.plugin.converter.action
+package com.solanteq.solar.plugin.action
 
 import KOTLIN_DSL_EXTENSION
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -62,7 +62,7 @@ class ConvertJsonToKotlinDSLAction: AnAction() {
                 } catch (ex: IOException) {
                     throw ConversionException(
                         "Error while renaming file `${selectedFile.name}` to " +
-                           // "`\"${selectedFile.nameWithoutExtension}.$KOTLIN_DSL_EXTENSION\"`",
+                            "`\"${selectedFile.nameWithoutExtension}.$KOTLIN_DSL_EXTENSION\"`",
                         ex
                     )
                 }
@@ -71,17 +71,13 @@ class ConvertJsonToKotlinDSLAction: AnAction() {
             // set text
             WriteCommandAction.runWriteCommandAction(project) {
                 try {
-                    document.setText(
-                        result.generateDsl()
-                    )
+                    document.setText(result.generateDsl())
 
                     val documentManager = PsiDocumentManager.getInstance(project)
                     documentManager.commitDocument(document)
 
                     val psiFile = e.getData(LangDataKeys.PSI_FILE)
                     if (psiFile != null) {
-//                        val importPath = ImportPath.fromString("com.solanteq.solar.air.tamandua.dsl.builder.*")
-//                        addImportToPsiFile(e.project!!, psiFile, importPath)
                         CodeStyleManager.getInstance(project).reformat(psiFile)
                     }
                 } catch (ex: IOException) {
@@ -108,13 +104,4 @@ class ConvertJsonToKotlinDSLAction: AnAction() {
         e.presentation.isEnabled = isJsonFile && isFormPath
         e.presentation.isVisible = isJsonFile && isFormPath
     }
-
-//    private fun addImportToPsiFile(project: Project, psiFile: PsiFile, importText: ImportPath) {
-//        val psiFactory = KtPsiFactory(project)
-//        val importStatement = psiFactory.createImportDirective(importText)
-//
-//        if (psiFile.children.none { it is KtImportList }) {
-//            psiFile.add(importStatement)
-//        }
-//    }
 }

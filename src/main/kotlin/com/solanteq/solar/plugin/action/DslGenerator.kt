@@ -10,6 +10,7 @@ import com.solanteq.solar.plugin.json.schema.action.ReloadType
 import com.solanteq.solar.plugin.json.schema.expression.Expression
 import com.solanteq.solar.plugin.json.schema.field.Field
 import com.solanteq.solar.plugin.json.schema.field.FieldRow
+import com.solanteq.solar.plugin.json.schema.field.FieldType
 import com.solanteq.solar.plugin.json.schema.group.AbstractGroup
 import com.solanteq.solar.plugin.json.schema.group.GroupRow
 import com.solanteq.solar.plugin.json.schema.group.RowGroup
@@ -21,55 +22,32 @@ import com.solanteq.solar.plugin.json.schema.parameter.InlineParameter
 import com.solanteq.solar.plugin.json.schema.parameter.RequestParameter
 import com.solanteq.solar.plugin.json.schema.request.FormRequest
 import com.solanteq.solar.plugin.json.schema.request.InlineRequest
+import com.solanteq.solar.plugin.util.toLowerFirstLetter
+
+const val IMPORT_FOR_DSL_CONFIG = "import com.solanteq.solar.air.tamandua.dsl.builder.*"
 
 fun Form.generateDsl(): String {
     val formElements = mutableListOf<String>()
 
-    if (reloadType != null) {
-        formElements.add(reloadType.generateDsl(::reloadType.name))
-    }
-    if (pollPeriod != null) {
-        formElements.add(pollPeriod.generateDsl(::pollPeriod.name))
-    }
-    if (breadcrumb != null) {
-        formElements.add(breadcrumb.generateDsl())
-    }
-    if (editable != null) {
-        formElements.add(editable.generateDsl(::editable.name))
-    }
-    if (removableWhen != null) {
-        formElements.add(removableWhen.generateDsl(::removableWhen.name))
-    }
-    if (source != null) {
-        formElements.add(source.generateDsl(::source.name))
-    }
-    if (createSource != null) {
-        formElements.add(createSource.generateDsl(::createSource.name))
-    }
-    if (save != null) {
-        formElements.add(save.generateDsl(::save.name))
-    }
-    if (remove != null) {
-        formElements.add(remove.generateDsl(::remove.name))
-    }
-    if (actions != null) {
-        formElements.add(actions.generateDsl())
-    }
+    formElements.addIfNotNull(reloadType) { reloadType?.generateDsl(::reloadType.name) }
+    formElements.addIfNotNull(pollPeriod) { pollPeriod?.generateDsl(::pollPeriod.name) }
+    formElements.addIfNotNull(breadcrumb) { breadcrumb?.generateDsl() }
+    formElements.addIfNotNull(editable) { editable?.generateDsl(::editable.name) }
+    formElements.addIfNotNull(removableWhen) { removableWhen?.generateDsl(::removableWhen.name) }
+    formElements.addIfNotNull(source) { source?.generateDsl(::source.name) }
+    formElements.addIfNotNull(createSource) { createSource?.generateDsl(::createSource.name) }
+    formElements.addIfNotNull(save) { save?.generateDsl(::save.name) }
+    formElements.addIfNotNull(actions) { actions?.generateDsl() }
 
-    if (!groupRows.isNullOrEmpty()) {
-        formElements.add(groupRows.generateDsl())
-    }
-    if (!groups.isNullOrEmpty()) {
-        formElements.add(groups.generateDsl())
-    }
-
-    if (!expressions.isNullOrEmpty()) {
-        formElements.add(expressions.generateDsl())
-    }
+    formElements.addIfNotEmpty(groupRows) { groupRows?.generateDsl() }
+    formElements.addIfNotEmpty(groups) { groups?.generateDsl() }
+    formElements.addIfNotEmpty(expressions) { expressions?.generateDsl() }
 
     val formElementsString = formElements.joinToString(System.lineSeparator())
 
     return """ 
+        $IMPORT_FOR_DSL_CONFIG
+        
         form("$name", "$module") {
         $formElementsString
         }
@@ -92,15 +70,9 @@ fun FormRequest.generateDsl(elementName: String): String {
 
 @JvmName("GenerateDslRequestParameters")
 fun List<RequestParameter>.generateDsl(): String {
-    val paramList = mutableListOf<String>()
-    this.forEach {
-        paramList.add(it.generateDsl())
-    }
-    val paramString = paramList.joinToString(System.lineSeparator())
-
     return """
         params {
-            $paramString
+            ${joinToString(System.lineSeparator()) { it.generateDsl() }}
         }
         """.trimMargin()
 }
@@ -111,636 +83,360 @@ fun RequestParameter.generateDsl(): String {
         """.trimMargin()
 }
 
-fun Boolean.generateDsl(elementName: String): String {
-    return """
-        $elementName($this)
-        """.trimMargin()
-}
-
-fun Long.generateDsl(elementName: String): String {
-    return """
-        $elementName($this)
-        """.trimMargin()
-}
-
-fun Int.generateDsl(elementName: String): String {
-    return """
-        $elementName($this)
-        """.trimMargin()
-}
-
-fun String.generateDsl(elementName: String): String {
-    return """
-        $elementName("$this")
-        """.trimMargin()
-}
-
-fun ReloadType.generateDsl(elementName: String): String {
-    return """
-        $elementName(${this.javaClass.simpleName}.${this.name})
-        """.trimMargin()
+fun Any.generateDsl(elementName: String): String {
+    return when (this) {
+        is Boolean, is Long, is Int -> "$elementName($this)"
+        is String -> "$elementName(\"$this\")"
+        is ReloadType -> "$elementName(${javaClass.simpleName}.${name})"
+        else -> ""
+    }
 }
 
 fun Breadcrumb.generateDsl(): String {
-    val breadcrumbElements = mutableListOf<String>()
-    if (parentForm != null) {
-        breadcrumbElements.add(parentForm.generateDsl(::parentFormExpression.name))
-    }
-    if (parentFormExpression != null) {
-        breadcrumbElements.add(parentFormExpression.generateDsl(::parentFormExpression.name))
-    }
-    if (parentIdExpression != null) {
-        breadcrumbElements.add(parentIdExpression.generateDsl(::parentIdExpression.name))
-    }
-    if (labelField != null) {
-        breadcrumbElements.add(labelField.generateDsl(::labelField.name))
-    }
+    val breadcrumbElements = listOfNotNull(
+        parentForm?.generateDsl(::parentFormExpression.name),
+        parentFormExpression?.generateDsl(::parentFormExpression.name),
+        parentIdExpression?.generateDsl(::parentIdExpression.name),
+        labelField?.generateDsl(::labelField.name)
+    ).joinToString(System.lineSeparator())
 
-    val breadcrumbElementsString = breadcrumbElements.joinToString(System.lineSeparator())
     return """ 
         breadcrumb {
-        $breadcrumbElementsString
+        $breadcrumbElements
         }
         """.trimMargin()
 }
 
 @JvmName("GenerateDslExpressions")
 fun List<Expression>.generateDsl(): String {
-    val expressionList = mutableListOf<String>()
-    this.forEach {
-        expressionList.add(it.generateDsl())
-    }
-    val expressionString = expressionList.joinToString(System.lineSeparator())
-
     return """
         expressions {
-            $expressionString
+        ${joinToString(System.lineSeparator()) { it.generateDsl() }}
         }
         """.trimMargin()
 }
 
-fun Expression.generateDsl(): String {
-    return """
-        expression("${this.name}", "${this.value}")
-        """.trimMargin()
-}
+fun Expression.generateDsl(): String = "expression(\"${name}\", \"${value}\")"
 
 @JvmName("GenerateDslGroupRows")
 fun List<GroupRow>.generateDsl(): String {
-    val groupRowList = mutableListOf<String>()
-    this.forEach {
-        groupRowList.add(it.generateDsl())
-    }
-    val groupRowString = groupRowList.joinToString(System.lineSeparator())
-
     return """
         groupRows {
-        $groupRowString
+        ${joinToString(System.lineSeparator()) { it.generateDsl() }}
         }
         """.trimMargin()
 }
 
 fun GroupRow.generateDsl(): String {
-    val groupList = mutableListOf<String>()
-    this.groups?.forEach {
-        groupList.add(it.generateDsl(it.javaClass.simpleName))
+    val groupList = groups?.joinToString(System.lineSeparator()) {
+        it.generateDsl(it.javaClass.simpleName)
     }
-    val groupRowString = groupList.joinToString(System.lineSeparator())
 
     return """
         groupRow {
-        $groupRowString
+        $groupList
         }
         """.trimMargin()
 }
 
 fun List<AbstractGroup>.generateDsl(): String {
-    val groupList = mutableListOf<String>()
-    this.forEach {
-        groupList.add(it.generateDsl(it.javaClass.simpleName))
-    }
-    val groupRowString = groupList.joinToString(System.lineSeparator())
-
     return """
         groupRows {
             groupRow {
-            $groupRowString
+            ${joinToString(System.lineSeparator()) { it.generateDsl(it.javaClass.simpleName) }}
             }
         }
         """.trimMargin()
 }
 
-
 fun AbstractGroup.generateDsl(elementName: String): String {
     val groupElements = mutableListOf<String>()
+    isCollapsed?.let { groupElements.add(it.generateDsl(::isCollapsed.name)) }
 
-    if (isCollapsed != null) {
-        groupElements.add(isCollapsed.generateDsl(::isCollapsed.name))
-    }
+    when (this) {
+        is InlineGroup -> {
+            listOfNotNull(
+                create?.generateDsl(::create.name),
+                view?.generateDsl(::view.name),
+                edit?.generateDsl(::edit.name),
+                remove?.generateDsl(::remove.name),
+                export?.generateDsl(::export.name),
+                actions?.generateDsl(),
+                rows?.generateDsl(),
+                inline.rowStyle?.generateDsl(),
+                inline.preloadCondition?.generateDsl(),
+                inline.detailedGroups?.generateDsl("detailedGroups", "detailedGroup"),
+                inline.scrollable.generateDsl("scrollable"),
+                inline.expandableRow.generateDsl("expandableRow")
+            ).forEach { if (it.isNotEmpty()) groupElements.add(it) }
+        }
 
-    if (this is InlineGroup) {
-        if (create != null) {
-            groupElements.add(create.generateDsl(::create.name))
-        }
-        if (view != null) {
-            groupElements.add(view.generateDsl(::view.name))
-        }
-        if (edit != null) {
-            groupElements.add(edit.generateDsl(::edit.name))
-        }
-        if (remove != null) {
-            groupElements.add(remove.generateDsl(::remove.name))
-        }
-        if (export != null) {
-            groupElements.add(export.generateDsl(::export.name))
-        }
-        if (actions != null) {
-            groupElements.add(actions.generateDsl())
-        }
-        if (!rows.isNullOrEmpty()) {
-            groupElements.add(rows.generateDsl())
-        }
-        if (inline.rowStyle != null) {
-            groupElements.add(inline.rowStyle!!.generateDsl())
-        }
-        if (inline.preloadCondition != null) {
-            groupElements.add(inline.preloadCondition!!.generateDsl())
-        }
-        if (!inline.detailedGroups.isNullOrEmpty()) {
-            groupElements.add(inline.detailedGroups!!.generateDsl("detailedGroups", "detailedGroup"))
-        }
-        if (inline.scrollable != null) {
-            groupElements.add(inline.scrollable.generateDsl("scrollable"))
-        }
-        if (inline.expandableRow != null) {
-            groupElements.add(inline.expandableRow.generateDsl("expandableRow"))
-        }
+        is RowGroup -> rows?.let { groupElements.add(it.generateDsl()) }
+        is TabGroup -> tabs?.let { groupElements.add(it.generateDsl()) }
     }
-    if (this is RowGroup) {
-        if (rows != null) {
-            groupElements.add(rows!!.generateDsl())
-        }
-    }
-    if (this is TabGroup) {
-        if (tabs != null) {
-            groupElements.add(tabs.generateDsl())
-        }
-    }
-
-    val groupElementsString = groupElements.joinToString(System.lineSeparator())
 
     return """
-        ${elementName.toLowerFirstLetter()}("${this.name}", ${this.groupSize}) {
-        $groupElementsString
+        ${elementName.toLowerFirstLetter()}("$name", $groupSize) {
+        ${groupElements.joinToString(System.lineSeparator())}
         }
         """.trimMargin()
 }
 
 fun InlineAction.generateDsl(elementName: String): String {
-    val actionElements = mutableListOf<String>()
-
-    if (request != null) {
-        actionElements.add(request.generateDsl())
-    }
-    if (loadData != null) {
-        actionElements.add(loadData.generateDsl(::loadData.name))
-    }
-    if (postAction != null) {
-        actionElements.add(postAction.generateDsl(::postAction.name))
-    }
-    if (labelField != null) {
-        actionElements.add(labelField.generateDsl(::labelField.name))
-    }
-
-    val actionElementsString = actionElements.joinToString(System.lineSeparator())
+    val actionElements = listOfNotNull(
+        request?.generateDsl(),
+        loadData?.generateDsl(::loadData.name),
+        postAction?.generateDsl(::postAction.name),
+        labelField?.generateDsl(::labelField.name)
+    ).joinToString(System.lineSeparator())
 
     return """
-        ${elementName.toLowerFirstLetter()}("${this.name}", "${this.form}") {
-        $actionElementsString
+        ${elementName.toLowerFirstLetter()}("$name", "$form") {
+        $actionElements
         }
         """.trimMargin()
 }
 
-fun InlineRequest.generateDsl(): String {
-    return """ 
-        request("$name") 
-        """.trimMargin()
-}
+fun InlineRequest.generateDsl(): String = "request(\"$name\")"
 
 @JvmName("GenerateDslInlineParameters")
 fun List<InlineParameter>.generateDsl(): String {
-    val paramList = mutableListOf<String>()
-    this.forEach {
-        paramList.add(it.generateDsl())
-    }
-    val paramString = paramList.joinToString(System.lineSeparator())
-
     return """
         params {
-        $paramString
-            }
+        ${joinToString(System.lineSeparator()) { it.generateDsl() }}
+        }
         """.trimMargin()
 }
 
-fun InlineParameter.generateDsl(): String {
-    return """
-        param("${this.name}", "${this.value}")
-        """.trimMargin()
-}
+fun InlineParameter.generateDsl(): String = "param(\"$name\", \"$value\")"
 
 fun PostAction.generateDsl(elementName: String): String {
-    val actionElements = mutableListOf<String>()
-
-    if (showSuccess != null) {
-        actionElements.add(showSuccess.generateDsl(::showSuccess.name))
-    }
-    if (reloadOnComplete != null) {
-        actionElements.add(reloadOnComplete.generateDsl(::reloadOnComplete.name))
-    }
-    if (reloadType != null) {
-        actionElements.add(reloadType.generateDsl(::reloadType.name))
-    }
-    if (reloadGroups != null) {
-        actionElements.add(reloadGroups.generateDsl(::reloadGroups.name, "reloadGroup"))
-    }
-
-    val actionElementsString = actionElements.joinToString(System.lineSeparator())
+    val actionElements = listOfNotNull(
+        showSuccess.generateDsl(::showSuccess.name),
+        reloadOnComplete.generateDsl(::reloadOnComplete.name),
+        reloadType?.generateDsl(::reloadType.name),
+        reloadGroups?.generateDsl(::reloadGroups.name, "reloadGroup")
+    ).joinToString(System.lineSeparator())
 
     return """
         ${elementName.toLowerFirstLetter()} {
-        $actionElementsString
+        $actionElements
         }
         """.trimMargin()
 }
 
-fun List<String>.generateDsl(elementName: String, insideElementName: String): String {
-    val paramList = mutableListOf<String>()
-    this.forEach {
-        paramList.add(it.generateDsl(insideElementName))
+fun List<String>.generateDsl(elementName: String, insideElementName: String): String = """
+    ${elementName.toLowerFirstLetter()} {
+        ${joinToString(System.lineSeparator()) { it.generateDsl(insideElementName) }}
     }
-    val paramString = paramList.joinToString(System.lineSeparator())
-
-    return """
-        ${elementName.toLowerFirstLetter()} {
-        $paramString
-        }
-        """.trimMargin()
-}
+    """.trimMargin()
 
 @JvmName("GenerateDslCustomActions")
 fun List<CustomAction>.generateDsl(): String {
-    val customActionList = mutableListOf<String>()
-    this.forEach {
-        customActionList.add(it.generateDsl())
-    }
-    val customActionString = customActionList.joinToString(System.lineSeparator())
-
     return """
         actions {
-        $customActionString
+        ${joinToString(System.lineSeparator()) { it.generateDsl() }}
         }
         """.trimMargin()
 }
 
 fun CustomAction.generateDsl(): String {
-    val actionElements = mutableListOf<String>()
-
-    if (request != null) {
-        actionElements.add(request.generateDsl())
-    }
-    if (params != null) {
-        actionElements.add(params.generateDsl())
-    }
-    if (loadData != null) {
-        actionElements.add(loadData.generateDsl(::loadData.name))
-    }
-    if (postAction != null) {
-        actionElements.add(postAction.generateDsl(::postAction.name))
-    }
-    if (parametersForm != null) {
-        actionElements.add(parametersForm.generateDsl(::parametersForm.name))
-    }
-    if (icon != null) {
-        actionElements.add(icon.generateDsl(::icon.name))
-    }
-    if (popupSize != null) {
-        actionElements.add(popupSize.generateDsl(::popupSize.name))
-    }
-    if (confirm != null) {
-        actionElements.add(confirm.generateDsl(::confirm.name))
-    }
-    if (loadAllParams != null) {
-        actionElements.add(loadAllParams.generateDsl(::loadAllParams.name))
-    }
-    if (requiredValidation != null) {
-        actionElements.add(requiredValidation.generateDsl(::requiredValidation.name))
-    }
-    if (clientValidation != null) {
-        actionElements.add(clientValidation.generateDsl(::clientValidation.name))
-    }
-    if (useParentDataObj != null) {
-        actionElements.add(useParentDataObj.generateDsl(::useParentDataObj.name))
-    }
-
-    val actionElementsString = actionElements.joinToString(System.lineSeparator())
+    val actionElements = listOfNotNull(
+        request?.generateDsl(),
+        params?.generateDsl(),
+        loadData.generateDsl(::loadData.name),
+        postAction?.generateDsl(::postAction.name),
+        parametersForm?.generateDsl(::parametersForm.name),
+        icon?.generateDsl(::icon.name)
+    ).joinToString(System.lineSeparator())
 
     return """
-        action("${this.name}") {
-        $actionElementsString
+        action("$name") {
+        $actionElements
         }
         """.trimMargin()
 }
 
 @JvmName("GenerateDslFieldRows")
-fun List<FieldRow>.generateDsl(): String {
-    val fieldRowList = mutableListOf<String>()
-    this.forEach {
-        fieldRowList.add(it.generateDsl())
+fun List<FieldRow>.generateDsl(): String = """
+    rows {
+        ${joinToString(System.lineSeparator()) { it.generateDsl() }}
     }
-    val fieldRowString = fieldRowList.joinToString(System.lineSeparator())
+    """.trimMargin()
 
-    return """
-        rows {
-        $fieldRowString
-        }
-        """.trimMargin()
-}
-
-fun FieldRow.generateDsl(): String {
-    val fieldRowElements = mutableListOf<String>()
-
-    if (fields != null) {
-        fieldRowElements.add(fields.generateDsl())
+fun FieldRow.generateDsl(): String = """
+    row {
+        ${fields?.generateDsl() ?: ""}
     }
-    val fieldRowString = fieldRowElements.joinToString(System.lineSeparator())
-
-    return """
-        row {
-        $fieldRowString
-        }
-        """.trimMargin()
-}
+    """.trimMargin()
 
 @JvmName("GenerateDslFields")
-fun List<Field>.generateDsl(): String {
-    val fieldList = mutableListOf<String>()
-    this.forEach {
-        fieldList.add(it.generateDsl())
+fun List<Field>.generateDsl(): String = """
+    fields {
+        ${joinToString(System.lineSeparator()) { it.generateDsl() }}
     }
-    val fieldString = fieldList.joinToString(System.lineSeparator())
-
-    return """
-        fields {
-        $fieldString
-        }
-        """.trimMargin()
-}
+    """.trimMargin()
 
 fun Field.generateDsl(): String {
     val fieldElements = mutableListOf<String>()
 
-    if (editable != null) {
-        fieldElements.add(editable.generateDsl(::editable.name))
-    }
-    if (required != null) {
-        fieldElements.add(required.generateDsl(::required.name))
-    }
-    if (source != null) {
-        fieldElements.add(source.generateDsl(::source.name))
-    }
-    if (defaultValue != null) {
-        fieldElements.add(defaultValue.generateDsl(::defaultValue.name))
-    }
-    if (subValueField != null) {
-        fieldElements.add(subValueField.generateDsl(::subValueField.name))
-    }
-    if (labelSize != null) {
-        fieldElements.add(labelSize.generateDsl(::labelSize.name))
-    }
-    if (unique != null) {
-        fieldElements.add(unique.generateDsl(::unique.name))
-    }
-    if (initDropDown != null) {
-        fieldElements.add(initDropDown.generateDsl(::initDropDown.name))
-    }
-    if (link != null) {
-        fieldElements.add(link.generateDsl())
-    }
-    if (style != null) {
-        fieldElements.add(style.generateDsl())
-    }
-    if (sortable != null) {
-        fieldElements.add(sortable.generateDsl(::sortable.name))
-    }
-    if (altFieldName != null) {
-        fieldElements.add(altFieldName.generateDsl(::altFieldName.name))
-    }
-    if (optionValueField != null) {
-        fieldElements.add(optionValueField.generateDsl(::optionValueField.name))
-    }
-    if (optionDisplayField != null) {
-        fieldElements.add(optionDisplayField.generateDsl(::optionDisplayField.name))
-    }
-    if (clearable != null) {
-        fieldElements.add(clearable.generateDsl(::clearable.name))
-    }
-    if (trimWhitespaces != null) {
-        fieldElements.add(trimWhitespaces.generateDsl(::trimWhitespaces.name))
-    }
-    if (format != null) {
-        fieldElements.add(format.generateDsl(::format.name))
-    }
+    editable?.let { fieldElements.add(it.generateDsl(::editable.name)) }
+    required?.let { fieldElements.add(it.generateDsl(::required.name)) }
+    source?.let { fieldElements.add(it.generateDsl(::source.name)) }
+    defaultValue?.let { fieldElements.add(it.generateDsl(::defaultValue.name)) }
+    subValueField?.let { fieldElements.add(it.generateDsl(::subValueField.name)) }
+    labelSize?.let { fieldElements.add(it.generateDsl(::labelSize.name)) }
+    unique?.let { fieldElements.add(it.generateDsl(::unique.name)) }
+    initDropDown?.let { fieldElements.add(it.generateDsl(::initDropDown.name)) }
+    link?.let { fieldElements.add(it.generateDsl()) }
+    style?.let { fieldElements.add(it.generateDsl()) }
+    sortable?.let { fieldElements.add(it.generateDsl(::sortable.name)) }
+    altFieldName?.let { fieldElements.add(it.generateDsl(::altFieldName.name)) }
+    optionValueField?.let { fieldElements.add(it.generateDsl(::optionValueField.name)) }
+    optionDisplayField?.let { fieldElements.add(it.generateDsl(::optionDisplayField.name)) }
+    clearable?.let { fieldElements.add(it.generateDsl(::clearable.name)) }
+    trimWhitespaces?.let { fieldElements.add(it.generateDsl(::trimWhitespaces.name)) }
+    format?.let { fieldElements.add(it.generateDsl(::format.name)) }
+
     val fieldString = fieldElements.joinToString(System.lineSeparator())
 
-    if (fieldElements.isEmpty() && fieldSize != null) {
-        return """
-            ${this.type.toString().toLowerCase()}("${this.name}", ${this.fieldSize}) 
-            """.trimMargin()
-    } else if (fieldSize != null) {
-        return """
-            ${this.type.toString().toLowerCase()}("${this.name}", ${this.fieldSize}) {
-            $fieldString
+    return if (fieldElements.isEmpty() && fieldSize != null) {
+        if (type == FieldType.LIST) {
+            """
+            ${type.toString().toLowerCase()}("$name", $fieldSize) {
             }
             """.trimMargin()
+        } else {
+            """
+            ${type.toString().toLowerCase()}("$name", $fieldSize)
+            """.trimMargin()
+        }
+    } else if (fieldElements.isEmpty() && type == FieldType.LIST) {
+        """
+        ${type.toString().toLowerCase()}("$name") {
+        }
+        """.trimMargin()
+    } else if (fieldSize != null) {
+        """
+        ${type.toString().toLowerCase()}("$name", $fieldSize) {
+        $fieldString
+        }
+        """.trimMargin()
+    } else {
+        """
+        ${type.toString().toLowerCase()}("$name")
+        """.trimMargin()
     }
-
-    return """
-        ${this.type.toString().toLowerCase()}("${this.name}") 
-        """.trimMargin()
 }
 
-fun Link.generateDsl(): String {
-    return """
-        link("${this.name}")
-        """.trimMargin()
-}
+fun Link.generateDsl(): String = "link(\"$name\")"
 
 fun RowStyle.generateDsl(): String {
-    val rowStyleElements = mutableListOf<String>()
-
-    if (info != null) {
-        rowStyleElements.add(info.generateDsl(::info.name))
-    }
-    if (success != null) {
-        rowStyleElements.add(success.generateDsl(::success.name))
-    }
-    if (warning != null) {
-        rowStyleElements.add(warning.generateDsl(::warning.name))
-    }
-    if (error != null) {
-        rowStyleElements.add(error.generateDsl(::error.name))
-    }
-    if (muted != null) {
-        rowStyleElements.add(muted.generateDsl(::muted.name))
-    }
-    val rowStyleString = rowStyleElements.joinToString(System.lineSeparator())
+    val rowStyleElements = listOfNotNull(
+        info?.generateDsl(::info.name),
+        success?.generateDsl(::success.name),
+        warning?.generateDsl(::warning.name),
+        error?.generateDsl(::error.name),
+        muted?.generateDsl(::muted.name)
+    ).joinToString(System.lineSeparator())
 
     return """
         rowStyle {
-        $rowStyleString
+        $rowStyleElements
         }
         """.trimMargin()
 }
 
-fun PreloadCondition.generateDsl(): String {
-    val preloadConditionElements = mutableListOf<String>()
 
-    if (pager != null) {
-        preloadConditionElements.add(pager.generateDsl())
-    }
-    if (filter != null) {
-        preloadConditionElements.add(filter.generateDsl())
-    }
-    val preloadConditionString = preloadConditionElements.joinToString(System.lineSeparator())
+fun PreloadCondition.generateDsl(): String {
+    val preloadConditionElements = listOfNotNull(
+        pager?.generateDsl(),
+        filter?.generateDsl()
+    ).joinToString(System.lineSeparator())
 
     return """
         preloadCondition {
-        $preloadConditionString
+        $preloadConditionElements
         }
         """.trimMargin()
 }
 
 fun InlinePager.generateDsl(): String {
-    val inlinePagerElements = mutableListOf<String>()
-
-    if (maxSize != null) {
-        inlinePagerElements.add(maxSize.generateDsl(::maxSize.name))
-    }
-    if (countRequest != null) {
-        inlinePagerElements.add(countRequest!!.generateDsl(::countRequest.name))
-    }
-    if (maxCount != null) {
-        inlinePagerElements.add(maxCount.generateDsl(::maxCount.name))
-    }
-    if (skipCount != null) {
-        inlinePagerElements.add(skipCount.generateDsl(::skipCount.name))
-    }
-    val inlinePagerString = inlinePagerElements.joinToString(System.lineSeparator())
+    val inlinePagerElements = listOfNotNull(
+        maxSize.generateDsl(::maxSize.name),
+        countRequest?.generateDsl(::countRequest.name),
+        maxCount?.generateDsl(::maxCount.name),
+        skipCount?.generateDsl(::skipCount.name)
+    ).joinToString(System.lineSeparator())
 
     return """
-        pager(${this.itemsPerPage}) {
-        $inlinePagerString
+        pager($itemsPerPage) {
+        $inlinePagerElements
         }
         """.trimMargin()
 }
 
 fun InlineFilter.generateDsl(): String {
-    val inlineFilterElements = mutableListOf<String>()
-
-    if (link != null) {
-        inlineFilterElements.add(link.generateDsl(::link.name))
-    }
-    if (mandatory != null) {
-        inlineFilterElements.add(mandatory.generateDsl(::mandatory.name))
-    }
-    if (collapse != null) {
-        inlineFilterElements.add(collapse.generateDsl(::collapse.name))
-    }
-    if (groups != null) {
-        inlineFilterElements.add(groups.generateDsl())
-    }
-    if (cacheable != null) {
-        inlineFilterElements.add(cacheable.generateDsl(::cacheable.name))
-    }
-    val inlineFilterString = inlineFilterElements.joinToString(System.lineSeparator())
+    val inlineFilterElements = listOfNotNull(
+        link?.generateDsl(::link.name),
+        mandatory.generateDsl(::mandatory.name),
+        collapse.generateDsl(::collapse.name),
+        groups?.generateDsl(),
+        cacheable.generateDsl(::cacheable.name)
+    ).joinToString(System.lineSeparator())
 
     return """
         filter {
-        $inlineFilterString
+        $inlineFilterElements
         }
         """.trimMargin()
 }
 
 @JvmName("GenerateDslTabs")
-fun List<Tab>.generateDsl(): String {
-    val tabList = mutableListOf<String>()
-    this.forEach {
-        tabList.add(it.generateDsl())
+fun List<Tab>.generateDsl(): String = """
+    tabs {
+        ${joinToString(System.lineSeparator()) { it.generateDsl() }}
     }
-    val tabString = tabList.joinToString(System.lineSeparator())
-
-    return """
-        tabs {
-        $tabString
-        }
-        """.trimMargin()
-}
+    """.trimMargin()
 
 fun Tab.generateDsl(): String {
-    val tabElements = mutableListOf<String>()
-
-    if (params != null) {
-        tabElements.add(params.generateDsl())
-    }
-    val inlineFilterString = tabElements.joinToString(System.lineSeparator())
-
     return """
-        tab("${this.name}", ${this.form}) {
-        $inlineFilterString
+        tab("$name", $form) {
+        ${params?.generateDsl() ?: ""}
         }
         """.trimMargin()
 }
 
 @JvmName("GenerateDslFormParameters")
-fun List<FormParameter>.generateDsl(): String {
-    val paramList = mutableListOf<String>()
-    this.forEach {
-        paramList.add(it.generateDsl())
+fun List<FormParameter>.generateDsl(): String = """
+    params {
+        ${joinToString(System.lineSeparator()) { it.generateDsl() }}
     }
-    val paramString = paramList.joinToString(System.lineSeparator())
+    """.trimMargin()
 
-    return """
-        params {
-        $paramString
-            }
-        """.trimMargin()
-}
-
-fun FormParameter.generateDsl(): String {
-    if (defaultValue != null) {
-        return """
-            param("${this.name}") {
-            ${this.defaultValue.generateDsl(::defaultValue.name)}
-            }
-            """.trimMargin()
+fun FormParameter.generateDsl(): String = if (defaultValue != null) {
+    """
+    param("$name") {
+    ${defaultValue.generateDsl(::defaultValue.name)}
     }
-
-    return """
-        param("${this.name}", "${this.value}")
-        """.trimMargin()
+    """.trimMargin()
+} else {
+    """
+    param("$name", "$value")
+    """.trimMargin()
 }
 
 @JvmName("GenerateDslRowGroups")
 fun List<RowGroup>.generateDsl(): String {
-    val rowGroupList = mutableListOf<String>()
-    this.forEach {
-        rowGroupList.add(it.generateDsl(it.javaClass.simpleName))
-    }
-    val rowGroupString = rowGroupList.joinToString(System.lineSeparator())
-
     return """
-        $rowGroupString
+        ${joinToString(System.lineSeparator()) { it.generateDsl(it.javaClass.simpleName) }}
         """.trimMargin()
 }
 
-fun String.toLowerFirstLetter(): String = this.replaceFirst(this[0], this[0].toLowerCase())
+private fun <T> MutableList<String>.addIfNotNull(item: T?, action: () -> String?) {
+    item?.let { action()?.let { it1 -> add(it1) } }
+}
+
+private fun <T> MutableList<String>.addIfNotEmpty(items: List<T>?, action: () -> String?) {
+    if (!items.isNullOrEmpty()) action()?.let { add(it) }
+}
