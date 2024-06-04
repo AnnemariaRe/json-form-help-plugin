@@ -3,7 +3,11 @@ package com.solanteq.solar.plugin.element.expression
 import com.intellij.json.psi.JsonObject
 import com.intellij.json.psi.JsonProperty
 import com.intellij.json.psi.JsonStringLiteral
+import com.intellij.model.psi.PsiSymbolReferenceService
 import com.solanteq.solar.plugin.element.base.FormElement
+import com.solanteq.solar.plugin.element.form.FormExpression
+import com.solanteq.solar.plugin.reference.expression.ExpressionSymbolReference
+import com.solanteq.solar.plugin.symbol.FormSymbol
 
 /**
  * An interface for [FormElement]s that contain properties like `visibleWhen`
@@ -38,24 +42,24 @@ interface ExpressionAware {
      * Returns all expressions that were found by the given [type], or an empty list if the declaration
      * of this expression does not exist or no expressions are found
      */
-//    fun getExpressions(type: ExpressionType): List<FormExpression> {
-//        val expressionSymbols = getExpressionSymbols(type)
-//        val expressionDeclarations = expressionSymbols.map { it.element }
-//        val expressionObjects = expressionDeclarations.mapNotNull {
-//            it.parent?.parent as? JsonObject
-//        }
-//        return expressionObjects.mapNotNull { FormExpression.createFrom(it) }
-//    }
+    fun getExpressions(type: ExpressionType): List<FormExpression> {
+        val expressionSymbols = getExpressionSymbols(type)
+        val expressionDeclarations = expressionSymbols.map { it.element }
+        val expressionObjects = expressionDeclarations.mapNotNull {
+            it.parent?.parent as? JsonObject
+        }
+        return expressionObjects.mapNotNull { FormExpression.createFrom(it) }
+    }
 
     /**
      * Returns a single expression (the first one if multiple found) that is found by the given [type],
      * or null if the declaration of this expression does not exist or expression is not found
      */
-//    fun getExpression(type: ExpressionType): FormExpression? {
-//        val expressionSymbol = getExpressionSymbols(type).firstOrNull() ?: return null
-//        val expressionObject = expressionSymbol.element.parent?.parent as? JsonObject ?: return null
-//        return FormExpression.createFrom(expressionObject)
-//    }
+    fun getExpression(type: ExpressionType): FormExpression? {
+        val expressionSymbol = getExpressionSymbols(type).firstOrNull() ?: return null
+        val expressionObject = expressionSymbol.element.parent?.parent as? JsonObject ?: return null
+        return FormExpression.createFrom(expressionObject)
+    }
 
     /**
      * `never` is a standard expressions that always has the value `false`. This method does not
@@ -74,14 +78,14 @@ interface ExpressionAware {
      */
     fun isNeverVisible() = isNeverExpression(ExpressionType.VISIBLE_WHEN)
 
-//    private fun getExpressionSymbols(type: ExpressionType): List<FormSymbol> {
-//        val value = getExpressionPropertyValue(type) ?: return emptyList()
-//        val expressionReference = PsiSymbolReferenceService
-//            .getService()
-//            .getReferences(value)
-//            .firstOrNull() as? ExpressionSymbolReference ?: return emptyList()
-//        return expressionReference.resolveReference()
-//    }
+    private fun getExpressionSymbols(type: ExpressionType): List<FormSymbol> {
+        val value = getExpressionPropertyValue(type) ?: return emptyList()
+        val expressionReference = PsiSymbolReferenceService
+            .getService()
+            .getReferences(value)
+            .firstOrNull() as? ExpressionSymbolReference ?: return emptyList()
+        return expressionReference.resolveReference()
+    }
 
     companion object {
 

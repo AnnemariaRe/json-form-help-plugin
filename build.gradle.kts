@@ -34,7 +34,16 @@ repositories {
 }
 
 dependencies {
+    testImplementation("org.junit.platform:junit-platform-launcher:$jUnitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$jupiterVersion")
 
+    testImplementation("com.intellij.remoterobot:remote-robot:$remoteRobotVersion")
+    testImplementation("com.intellij.remoterobot:remote-fixtures:$remoteRobotVersion")
+    testImplementation("com.intellij.remoterobot:ide-launcher:$remoteRobotVersion")
+    testImplementation("com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
 }
 
 val pluginFileName = "${rootProject.name}-$version.jar"
@@ -69,5 +78,16 @@ tasks {
     buildSearchableOptions {
         enabled = false
     }
+
+    test {
+        systemProperty("idea.home.path", "/Users/arepenko/IdeaProjects")
+        systemProperty("test.plugin.path", buildDir.resolve("libs/$pluginFileName").absolutePath)
+        systemProperty("test.idea.path", buildDir.resolve("ui-test/idea"))
+        systemProperty("test.idea.sandbox.path", buildDir.resolve("ui-test/idea-sandbox"))
+        systemProperty("test.project.path", buildDir.resolve("ui-test/project"))
+        systemProperty("remote.robot.version", remoteRobotVersion)
+        useJUnitPlatform()
+    }
+
 
 }

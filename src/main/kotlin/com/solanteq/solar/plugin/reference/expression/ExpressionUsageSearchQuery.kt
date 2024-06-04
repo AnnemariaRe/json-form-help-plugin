@@ -51,15 +51,11 @@ class ExpressionUsageSearchQuery(
         property: JsonProperty,
         consumer: Processor<in FormSymbolUsage>
     ): Boolean {
-        if (property.name !in ExpressionType.expressionProperties) {
-            return true
-        }
+        if (property.name !in ExpressionType.expressionProperties) return true
         val value = property.value as? JsonStringLiteral ?: return true
-        if (value.value != expressionName) {
-            return true
-        }
-        val usage = FormSymbolUsage(file, value.absoluteTextRangeWithoutQuotes, false)
-        return consumer.process(usage)
+        if (value.value != expressionName) return true
+
+        return consumer.process(FormSymbolUsage(file, value.absoluteTextRangeWithoutQuotes, false))
     }
 
 }

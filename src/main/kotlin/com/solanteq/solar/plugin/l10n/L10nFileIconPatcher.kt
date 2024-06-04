@@ -4,6 +4,7 @@ import com.intellij.ide.FileIconPatcher
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.solanteq.solar.plugin.file.L10nFileType
+import com.solanteq.solar.plugin.l10n.element.L10nLocale
 import javax.swing.Icon
 
 class L10nFileIconPatcher : FileIconPatcher {

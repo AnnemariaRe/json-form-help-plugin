@@ -4,8 +4,8 @@ import com.intellij.json.psi.JsonFile
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import com.solanteq.solar.plugin.file.L10nFileType
-import com.solanteq.solar.plugin.l10n.FormL10n
-import com.solanteq.solar.plugin.l10n.search.FormL10nSearch
+import com.solanteq.solar.plugin.l10n.element.FormL10n
+import com.solanteq.solar.plugin.search.FormL10nSearch
 
 val FORM_L10N_SHORT_INDEX_NAME = ID.create<String, Void>("FormNameL10nShortIndex")
 

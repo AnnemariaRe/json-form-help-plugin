@@ -16,7 +16,6 @@ abstract class FormSymbolRenameUsageSearcher(
 
     override fun collectSearchRequests(parameters: RenameUsageSearchParameters) =
         getSearchRequests(parameters.target, parameters.searchScope)
-
 }
 
 abstract class FormSymbolUsageSearcher(
@@ -25,20 +24,13 @@ abstract class FormSymbolUsageSearcher(
 
     override fun collectSearchRequests(parameters: UsageSearchParameters) =
         getSearchRequests(parameters.target, parameters.searchScope)
-
 }
 
-abstract class FormSymbolUsageSearcherBase(
-    private val typeToSearch: FormSymbolType
-) {
+abstract class FormSymbolUsageSearcherBase(private val typeToSearch: FormSymbolType) {
 
     abstract fun getQuery(target: FormSymbol,
                           effectiveScope: SearchScope): FormSymbolUsageSearchQuery
 
-    /**
-     * Used to build the scope based on scope that is passed in parameters.
-     * For example, you can restrict it by file types.
-     */
     abstract fun prepareSearchScope(initialScope: SearchScope): SearchScope
 
     protected fun getSearchRequests(searchTarget: SearchTarget,
@@ -55,20 +47,16 @@ abstract class FormSymbolUsageSearcherBase(
 
     private fun getSearchRequests(symbol: FormSymbol,
                                   initialScope: SearchScope): Collection<FormSymbolUsageSearchQuery> {
-        if(symbol.type != typeToSearch) {
-            return emptyList()
-        }
-        val targetFile = symbol.file.originalFile.virtualFile
-        val searchInTargetFile = if(targetFile == null) {
-            true
-        } else {
-            targetFile in initialScope
+        if (symbol.type != typeToSearch) return emptyList()
+
+        val searchInTargetFile = when (val targetFile = symbol.file.originalFile.virtualFile) {
+            null -> true
+            else -> targetFile in initialScope
         }
         val modifiedScope = prepareSearchScope(initialScope)
-        val effectiveScope = if(searchInTargetFile) {
-            modifiedScope.union(GlobalSearchScope.fileScope(symbol.file))
-        } else {
-            modifiedScope
+        val effectiveScope = when {
+            searchInTargetFile -> modifiedScope.union(GlobalSearchScope.fileScope(symbol.file))
+            else -> modifiedScope
         }
         return getQuery(symbol, effectiveScope).asList()
     }

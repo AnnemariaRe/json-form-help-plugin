@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.newvfs.VfsPresentationUtil
 import com.intellij.platform.backend.presentation.TargetPresentation
 import com.intellij.psi.PsiElement
 import com.solanteq.solar.plugin.file.L10nFileType
+import com.solanteq.solar.plugin.l10n.element.FormL10n
 
 class L10nTargetPresentationProvider : GotoTargetPresentationProvider {
 

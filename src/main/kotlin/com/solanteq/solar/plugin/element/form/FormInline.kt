@@ -18,6 +18,13 @@ class FormInline(
     private val valueObject: JsonObject
 ) : FormNamedElement<JsonProperty>(sourceElement, valueObject) {
 
+    val l10nKeys: List<String> by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        val inlineName = name ?: return@lazy emptyList()
+        containingRootForms.flatMap {
+            it.l10nKeys.map { key -> "$key.$inlineName" }
+        }
+    }
+
     val request by lazy(LazyThreadSafetyMode.PUBLICATION) {
        FormRequest.createFrom(valueObject.findProperty("request"))
     }

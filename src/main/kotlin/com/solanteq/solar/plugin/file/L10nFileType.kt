@@ -3,7 +3,7 @@ package com.solanteq.solar.plugin.file
 import com.intellij.json.JsonFileType
 import com.intellij.openapi.fileTypes.ex.FileTypeIdentifiableByVirtualFile
 import com.intellij.openapi.vfs.VirtualFile
-import com.solanteq.solar.plugin.l10n.L10nLocale
+import com.solanteq.solar.plugin.l10n.element.L10nLocale
 
 object L10nFileType : JsonFileType(), FileTypeIdentifiableByVirtualFile {
 

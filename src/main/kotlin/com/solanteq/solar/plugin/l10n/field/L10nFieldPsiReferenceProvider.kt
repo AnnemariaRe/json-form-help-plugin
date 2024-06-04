@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
-import com.solanteq.solar.plugin.l10n.FormL10n
+import com.solanteq.solar.plugin.l10n.element.FormL10n
 
 object L10nFieldPsiReferenceProvider : PsiReferenceProvider() {
 

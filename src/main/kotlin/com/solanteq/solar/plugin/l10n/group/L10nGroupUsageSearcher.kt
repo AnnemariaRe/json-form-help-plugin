@@ -13,5 +13,4 @@ class L10nGroupUsageSearcher : FormSymbolUsageSearcher(FormSymbolType.GROUP) {
 
     override fun prepareSearchScope(initialScope: SearchScope) =
         initialScope.restrictedByL10nFiles()
-
 }

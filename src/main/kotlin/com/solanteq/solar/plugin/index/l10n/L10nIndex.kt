@@ -3,7 +3,7 @@ package com.solanteq.solar.plugin.index.l10n
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import com.solanteq.solar.plugin.file.L10nFileType
-import com.solanteq.solar.plugin.l10n.FormL10n
+import com.solanteq.solar.plugin.l10n.element.FormL10n
 
 val L10N_INDEX_NAME = ID.create<L10nIndexKey, String>("L10nIndex")
 

@@ -5,7 +5,7 @@ import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.solanteq.solar.plugin.file.Icons
-import com.solanteq.solar.plugin.l10n.FormL10n
+import com.solanteq.solar.plugin.l10n.element.FormL10n
 import com.solanteq.solar.plugin.search.FormSearch
 import org.jetbrains.kotlin.idea.base.util.projectScope
 

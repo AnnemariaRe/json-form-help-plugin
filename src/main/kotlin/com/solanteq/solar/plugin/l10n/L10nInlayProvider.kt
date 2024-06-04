@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.solanteq.solar.plugin.element.base.FormLocalizableElement
 import com.solanteq.solar.plugin.element.creator.FormElementFactory
+import com.solanteq.solar.plugin.l10n.element.L10nLocale
 import com.solanteq.solar.plugin.util.isForm
 import javax.swing.JPanel
 

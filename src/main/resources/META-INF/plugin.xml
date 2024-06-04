@@ -11,10 +11,18 @@
     <depends>org.jetbrains.kotlin</depends>
 
     <actions>
-        <action id="com.solanteq.solar.plugin.converter.action.ConvertJsonToKotlinDSLAction"
-                class="com.solanteq.solar.plugin.action.ConvertJsonToKotlinDSLAction"
-                text="Convert JSON file to Kotlin DSL file">
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        <action id="com.solanteq.solar.plugin.converter.ConvertJsonToDSLAction"
+                class="com.solanteq.solar.plugin.converter.ConvertJsonToDSLAction"
+                text="Convert JSON file to Kotlin DSL file"
+                icon="AllIcons.Actions.Execute">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
+        </action>
+
+        <action id="com.solanteq.solar.plugin.l10n.generator.GenerateL10nFieldConstantAction"
+                class="com.solanteq.solar.plugin.l10n.generator.GenerateL10nFieldConstantAction"
+                text="Generate localization constants"
+                icon="AllIcons.Actions.EditSource">
+            <add-to-group group-id="EditorPopupMenu1" anchor="first"/>
         </action>
     </actions>
 
@@ -31,7 +39,7 @@
 
         <notificationGroup id="FileConversionNotification"
                            displayType="BALLOON"
-                           key="notification.group.name"/>
+                           key="notification.group.name.NotifierService"/>
 
 <!--        переход к сервисам и методам через request-->
         <psi.referenceContributor
@@ -53,7 +61,6 @@
 
 
         <!-- Localization-->
-
         <fileType name="SOLAR Localization"
                   language="JSON"
                   implementationClass="com.solanteq.solar.plugin.file.L10nFileType"

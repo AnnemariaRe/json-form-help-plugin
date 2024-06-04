@@ -5,7 +5,7 @@ import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
-import com.solanteq.solar.plugin.l10n.FormL10n
+import com.solanteq.solar.plugin.l10n.element.FormL10n
 import com.solanteq.solar.plugin.util.isRootFormModule
 
 class L10nModulePsiReference(

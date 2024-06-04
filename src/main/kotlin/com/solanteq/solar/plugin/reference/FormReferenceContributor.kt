@@ -45,21 +45,21 @@ class FormReferenceContributor : PsiReferenceContributor() {
             JsonIncludeReferenceProvider
         )
 
-        registrar.registerReferenceProvider(
-            inRootForm<JsonStringLiteral>()
-                .notJsonIncludeDeclaration()
-                .isPropertyValueWithKey(FormNamedElement.NAME_PROPERTY)
-                .isAtTopLevelObject(),
-            FormTopLevelFileReferenceProvider
-        )
-
-        registrar.registerReferenceProvider(
-            inRootForm<JsonStringLiteral>()
-                .notJsonIncludeDeclaration()
-                .isPropertyValueWithKey("module")
-                .isAtTopLevelObject(),
-            FormTopLevelModuleReferenceProvider
-        )
+//        registrar.registerReferenceProvider(
+//            inRootForm<JsonStringLiteral>()
+//                .notJsonIncludeDeclaration()
+//                .isPropertyValueWithKey(FormNamedElement.NAME_PROPERTY)
+//                .isAtTopLevelObject(),
+//            FormTopLevelFileReferenceProvider
+//        )
+//
+//        registrar.registerReferenceProvider(
+//            inRootForm<JsonStringLiteral>()
+//                .notJsonIncludeDeclaration()
+//                .isPropertyValueWithKey("module")
+//                .isAtTopLevelObject(),
+//            FormTopLevelModuleReferenceProvider
+//        )
     }
 
     /**

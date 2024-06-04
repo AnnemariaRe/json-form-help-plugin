@@ -3,10 +3,10 @@ package com.solanteq.solar.plugin.element.base
 import com.intellij.json.psi.JsonElement
 import com.intellij.json.psi.JsonObject
 import com.solanteq.solar.plugin.element.form.FormGroup
-import com.solanteq.solar.plugin.l10n.FormL10n
-import com.solanteq.solar.plugin.l10n.L10nLocale
-import com.solanteq.solar.plugin.l10n.search.FormL10nSearch
-import com.solanteq.solar.plugin.l10n.search.L10nSearchBase
+import com.solanteq.solar.plugin.l10n.element.FormL10n
+import com.solanteq.solar.plugin.l10n.element.L10nLocale
+import com.solanteq.solar.plugin.search.FormL10nSearch
+import com.solanteq.solar.plugin.search.L10nSearchBase
 
 /**
  * Represents a json element with `name` property that can be localized

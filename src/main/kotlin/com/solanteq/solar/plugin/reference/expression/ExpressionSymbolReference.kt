@@ -6,7 +6,7 @@ import com.intellij.json.psi.JsonFile
 import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.model.psi.PsiCompletableReference
 import com.solanteq.solar.plugin.element.form.FormRootFile
-import com.solanteq.solar.plugin.element.expression.FormExpression
+import com.solanteq.solar.plugin.element.form.FormExpression
 import com.solanteq.solar.plugin.file.RootFormFileType
 import com.solanteq.solar.plugin.search.FormGraphSearch
 import com.solanteq.solar.plugin.symbol.FormSymbol

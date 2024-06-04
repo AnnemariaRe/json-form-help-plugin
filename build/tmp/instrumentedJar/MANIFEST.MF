@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: Gradle 8.5
+Build-JVM: 17.0.9 (Homebrew 17.0.9+0)
+Version: 1.0.0-SNAPSHOT
+Build-Plugin: Gradle IntelliJ Plugin
+Build-Plugin-Version: 1.17.0
+Build-OS: Mac OS X 13.4.1 aarch64
+Build-SDK: IC-2023.3.2
+

@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.FileBasedIndex
 import com.solanteq.solar.plugin.index.l10n.FORM_L10N_SHORT_INDEX_NAME
-import com.solanteq.solar.plugin.l10n.search.FormL10nSearch
+import com.solanteq.solar.plugin.search.FormL10nSearch
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
 
 object L10nSearchQueryUtil {

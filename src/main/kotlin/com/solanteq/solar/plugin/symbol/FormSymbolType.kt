@@ -2,7 +2,7 @@ package com.solanteq.solar.plugin.symbol
 
 import com.solanteq.solar.plugin.element.form.FormField
 import com.solanteq.solar.plugin.element.form.FormGroup
-import com.solanteq.solar.plugin.element.expression.FormExpression
+import com.solanteq.solar.plugin.element.form.FormExpression
 
 /**
  * As all [FormSymbol]s share the same logic, inheritance isn't necessary.

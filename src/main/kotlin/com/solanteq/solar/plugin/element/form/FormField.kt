@@ -48,19 +48,17 @@ class FormField private constructor(
 
     override val l10nKeys: List<String> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         val containingGroups = containingGroups
-        containingGroups.flatMap {
-            it.l10nKeys.map { key -> "$key.$name" }
+
+        if (containingGroups.isNotEmpty() &&  containingGroups[0].name == "search") {
+            val inlineGroups = containingInline
+            inlineGroups.flatMap {
+                it.l10nKeys.map { key -> "$key._filter.$name" }
+            }
+        } else {
+            containingGroups.flatMap {
+                it.l10nKeys.map { key -> "$key.$name" }
+            }
         }
-    }
-
-    val fieldSize by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        val fieldSizeProperty = sourceElement.findProperty("fieldSize") ?: return@lazy null
-        fieldSizeProperty.valueAsIntOrNull()
-    }
-
-    val labelSize by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        val fieldSizeProperty = sourceElement.findProperty("labelSize") ?: return@lazy null
-        fieldSizeProperty.valueAsIntOrNull()
     }
 
     /**
@@ -74,11 +72,32 @@ class FormField private constructor(
     }
 
     /**
+     * Filter that contain this field.
+     */
+    private val containingForms by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        containingGroups.flatMap { it.containingRootForms }
+    }
+
+    private val containingFormGroups by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        containingForms.flatMap { it.allGroups }
+    }
+
+    private val containingInline by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        containingFormGroups.mapNotNull {
+            if (it.inline == null) {
+                null
+            } else {
+                it.inline
+            }
+        }
+    }
+
+    /**
      * All rows that contain this field.
      *
      * Multiple containing rows can exist if this field is in included form
      */
-    val containingRows by lazy(LazyThreadSafetyMode.PUBLICATION) {
+    private val containingRows by lazy(LazyThreadSafetyMode.PUBLICATION) {
         FormPsiUtils.firstParentsOfType(sourceElement, JsonObject::class).mapNotNull { FormRow.createFrom(it) }
     }
 
@@ -87,7 +106,7 @@ class FormField private constructor(
      *
      * Multiple containing groups can exist if this field is in included form
      */
-    val containingGroups: List<FormGroup> by lazy(LazyThreadSafetyMode.PUBLICATION) {
+    private val containingGroups: List<FormGroup> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         containingRows.flatMap { it.containingGroups }
     }
 

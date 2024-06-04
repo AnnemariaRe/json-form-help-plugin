@@ -3,7 +3,7 @@ package com.solanteq.solar.plugin.element.creator
 import com.intellij.json.psi.*
 import com.solanteq.solar.plugin.element.base.AbstractFormElement
 import com.solanteq.solar.plugin.element.base.FormLocalizableElement
-import com.solanteq.solar.plugin.element.expression.FormExpression
+import com.solanteq.solar.plugin.element.form.FormExpression
 import com.solanteq.solar.plugin.element.form.*
 
 /**
@@ -43,6 +43,7 @@ object FormElementFactory {
         if (sourceElement is JsonObject) {
             FormGroup.createFrom(sourceElement)?.let { return it }
             FormField.createFrom(sourceElement)?.let { return it }
+            FormAction.createFrom(sourceElement)?.let { return it }
         }
         if (sourceElement is JsonFile) {
             FormRootFile.createFrom(sourceElement)?.let { return it }

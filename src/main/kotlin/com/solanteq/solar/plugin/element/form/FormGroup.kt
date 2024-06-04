@@ -1,9 +1,11 @@
 package com.solanteq.solar.plugin.element.form
 
 import com.intellij.json.psi.JsonObject
+import com.intellij.json.psi.JsonProperty
 import com.solanteq.solar.plugin.element.base.FormLocalizableElement
 import com.solanteq.solar.plugin.element.creator.FormArrayElementCreator
 import com.solanteq.solar.plugin.element.expression.ExpressionAware
+import com.solanteq.solar.plugin.util.FormPsiUtils
 import com.solanteq.solar.plugin.util.valueAsIntOrNull
 
 /**
@@ -56,10 +58,11 @@ class FormGroup(
         sourceElement.findProperty("groupSize").valueAsIntOrNull()
     }
 
-    val contentType by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        rows?.let { return@lazy GroupContentType.ROWS }
-        inline?.let { return@lazy GroupContentType.INLINE }
-        return@lazy GroupContentType.INVALID
+    /**
+     * Filter that contain this field.
+     */
+    val filter by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        FormPsiUtils.firstParentsOfType(sourceElement, JsonObject::class).mapNotNull { FormFilter.createFrom(it) }
     }
 
     override fun getObjectContainingExpressions() = sourceElement
@@ -68,7 +71,6 @@ class FormGroup(
 
         ROWS,
         INLINE,
-        // TODO TABS,
         /**
          * Used when element has invalid configuration, that is contains no required properties
          */

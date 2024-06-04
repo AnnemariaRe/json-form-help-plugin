@@ -1,7 +1,7 @@
 package com.solanteq.solar.plugin.index.l10n
 
 import com.intellij.util.io.KeyDescriptor
-import com.solanteq.solar.plugin.l10n.L10nLocale
+import com.solanteq.solar.plugin.l10n.element.L10nLocale
 import org.jetbrains.kotlin.idea.core.util.readString
 import org.jetbrains.kotlin.idea.core.util.writeString
 import java.io.DataInput

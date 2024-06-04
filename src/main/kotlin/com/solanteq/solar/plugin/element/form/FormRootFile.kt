@@ -12,7 +12,6 @@ import com.solanteq.solar.plugin.element.base.FormFile
 import com.solanteq.solar.plugin.element.base.FormLocalizableElement
 import com.solanteq.solar.plugin.element.creator.FormElementCreator
 import com.solanteq.solar.plugin.element.expression.ExpressionAware
-import com.solanteq.solar.plugin.element.expression.FormExpression
 import com.solanteq.solar.plugin.file.RootFormFileType
 import com.solanteq.solar.plugin.reference.form.FormNameReference
 import com.solanteq.solar.plugin.util.FormPsiUtils

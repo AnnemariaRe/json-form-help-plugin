@@ -8,7 +8,7 @@ import com.intellij.model.psi.PsiSymbolReferenceProvider
 import com.intellij.model.search.SearchRequest
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.source.resolve.reference.impl.PsiMultiReference
-import com.solanteq.solar.plugin.l10n.FormL10n
+import com.solanteq.solar.plugin.l10n.element.FormL10n
 import com.solanteq.solar.plugin.l10n.L10nReferenceContributor
 import com.solanteq.solar.plugin.symbol.FormSymbolReference
 

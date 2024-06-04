@@ -4,8 +4,8 @@ import com.intellij.json.psi.JsonFile
 import com.intellij.json.psi.JsonProperty
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.FileContent
-import com.solanteq.solar.plugin.l10n.L10nLocale
-import com.solanteq.solar.plugin.l10n.search.FormL10nSearch
+import com.solanteq.solar.plugin.l10n.element.L10nLocale
+import com.solanteq.solar.plugin.search.FormL10nSearch
 import com.solanteq.solar.plugin.util.valueAsStringOrEmpty
 
 object L10nIndexUtil {

@@ -51,22 +51,19 @@ abstract class FormSymbolUsageSearchQuery(
                                     consumer: Processor<in FormSymbolUsage>): Boolean {
         references.forEach { reference ->
             ProgressManager.checkCanceled()
-            if(!reference.resolvesTo(resolveTarget)) {
-                return@forEach
-            }
+            if (!reference.resolvesTo(resolveTarget)) return@forEach
+
             val symbolUsage = FormSymbolUsage(reference)
-            if(!consumer.process(symbolUsage)) {
-                return false
-            }
+            if (!consumer.process(symbolUsage)) return false
         }
         return true
     }
 
-    private fun getGlobalSearchScope() = if(searchScope is GlobalSearchScope) {
-        searchScope
-    } else {
-        searchScope as LocalSearchScope
-        GlobalSearchScope.filesScope(resolveTarget.project, searchScope.virtualFiles.toList())
+    private fun getGlobalSearchScope() = when (searchScope) {
+        is GlobalSearchScope -> searchScope
+        else -> {
+            searchScope as LocalSearchScope
+            GlobalSearchScope.filesScope(resolveTarget.project, searchScope.virtualFiles.toList())
+        }
     }
-
 }
