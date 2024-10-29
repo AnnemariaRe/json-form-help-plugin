@@ -27,7 +27,7 @@ const val IMPORT_FOR_DSL_CONFIG = "import com.solanteq.solar.air.tamandua.dsl.bu
 fun Form.generateDsl(): String {
     val formElements = mutableListOf<String>()
 
-    // Добавляем элементы формы, если они не пустые
+    // Add provided form elements
     with(formElements) {
         addIfNotNull(reloadType) { reloadType?.generateDsl(::reloadType.name) }
         addIfNotNull(pollPeriod) { pollPeriod?.generateDsl(::pollPeriod.name) }

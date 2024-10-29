@@ -68,7 +68,7 @@
 
         <fileIconPatcher implementation="com.solanteq.solar.plugin.l10n.L10nFileIconPatcher" />
 
-<!--        значок глобуса у строки с ключом-->
+        <!-- значок глобуса у строки с ключом-->
         <codeInsight.lineMarkerProvider language="JSON"
                                         implementationClass="com.solanteq.solar.plugin.l10n.L10nLineMarkerProvider" />
         <!-- переход к лок константе-->
@@ -103,10 +103,10 @@
         <searcher forClass="com.intellij.refactoring.rename.api.RenameUsageSearchParameters"
                   implementationClass="com.solanteq.solar.plugin.l10n.group.L10nGroupRenameUsageSearcher"/>
 
-<!--        фильтр мест где разрешено переименование -->
+        <!-- фильтр мест где разрешено переименование -->
         <vetoRenameCondition implementation="com.solanteq.solar.plugin.l10n.L10nVetoPropertyRename" />
 
-<!--        подсказки при написании лок константы-->
+        <!-- подсказки при написании лок константы-->
         <completion.contributor language="JSON"
                                 implementationClass="com.solanteq.solar.plugin.l10n.L10nCompletionContributor" />
 
@@ -116,7 +116,7 @@
         <searcher forClass="com.intellij.refactoring.rename.api.RenameUsageSearchParameters"
                   implementationClass="com.solanteq.solar.plugin.l10n.field.L10nFieldRenameUsageSearcher"/>
 
-<!--        надпись русского перевода у поля-->
+        <!-- надпись русского перевода у поля-->
         <codeInsight.inlayProvider implementationClass="com.solanteq.solar.plugin.l10n.L10nInlayProvider"
                                    language="JSON" />
 
@@ -127,7 +127,6 @@
         <fileBasedIndex implementation="com.solanteq.solar.plugin.index.CallableServiceImplIndex" />
         <fileBasedIndex implementation="com.solanteq.solar.plugin.index.DropdownIndex" />
         <fileBasedIndex implementation="com.solanteq.solar.plugin.index.RootFormIndex" />
-
     </extensions>
 
 </idea-plugin>

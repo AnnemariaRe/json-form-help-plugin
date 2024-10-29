@@ -7,8 +7,8 @@ import com.solanteq.solar.plugin.converter.schema.deserializer.GroupDeserializer
 abstract class AbstractGroup(
     val name: String? = null,
     val groupSize: Int? = DEFAULT_GROUP_SIZE,
-//    val visibleWhen: String? = null,
     val isCollapsed: Boolean? = null,
+    //    val visibleWhen: String? = null,
 ) {
     companion object {
         /**

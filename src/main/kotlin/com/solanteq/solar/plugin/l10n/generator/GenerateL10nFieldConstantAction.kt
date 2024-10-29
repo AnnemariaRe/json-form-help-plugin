@@ -18,7 +18,7 @@ import java.io.IOException
 
 class GenerateL10nFieldConstantAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val symbolData = e.dataContext.getData("symbols") as? ArrayList<*>
+        val symbolData = e.dataContext.getData(SYMBOLS_DATA_ID) as? ArrayList<*>
         val symbol = symbolData?.get(0) as FormSymbol
         val fieldObject = symbol.element.parent?.parent as? JsonObject ?: return
         val fieldElement = FormField.createFrom(fieldObject) ?: return
@@ -26,7 +26,7 @@ class GenerateL10nFieldConstantAction : AnAction() {
         try {
             val dialogResult = GenerateOptionsDialog.showInputDialogWithCheckBox(
                 DialogData(
-                    message = "Enter localization file name:",
+                    message = "Enter localization file name (without .json):",
                     title = "Generate localization constants"
                 ),
                 null,
@@ -59,22 +59,30 @@ class GenerateL10nFieldConstantAction : AnAction() {
                     }
 
                     if (!l10nText.contains(finalL10nKey)) {
-                        val updatedText = l10nText.replace("{", "")
-                            .replace("}", "")
-                            .trimEnd { it == '\n' }
-                            .plus(",\n  \"$finalL10nKey\": \"\"")
+                        val updatedText = if (l10nText.isEmpty()) {
+                            "\n\"$finalL10nKey\": \"\""
+                        } else {
+                            l10nText.replace("{", "")
+                                .replace("}", "")
+                                .trimEnd { it == '\n' }
+                                .plus(",\n  \"$finalL10nKey\": \"\"")
+                        }
 
                         val updatedFileContent = "{$updatedText\n}"
                         updateFileContent(file, updatedFileContent)
                     }
                 }
 
+                val fullFileName = "$fileName.json"
+
                 val enDirectory = directory.children[0].firstChild as? PsiDirectory
-                val enFile = enDirectory?.findFile("$fileName.json") ?: throw Exception()
+                    ?: error("Cannot find localization directory")
+                val enFile = enDirectory.findFile(fullFileName) ?: enDirectory.createL10nFile(fullFileName)
                 updateL10nText(enFile)
 
                 val ruDirectory = directory.children[0].lastChild as? PsiDirectory
-                val ruFile = ruDirectory?.findFile("$fileName.json") ?: throw Exception()
+                    ?: error("Cannot find localization directory")
+                val ruFile = ruDirectory.findFile(fullFileName) ?: ruDirectory.createL10nFile(fullFileName)
                 updateL10nText(ruFile)
 
                 if (dialogResult.isPlaceholderChecked) {
@@ -93,6 +101,14 @@ class GenerateL10nFieldConstantAction : AnAction() {
                     "----------"
             )
         }
+    }
+
+    private fun PsiDirectory.createL10nFile(fullFileName: String): PsiFile {
+        var file: PsiFile? = null
+        WriteCommandAction.runWriteCommandAction(project) {
+            file = this.createFile(fullFileName)
+        }
+        return file!!
     }
 
     override fun update(e: AnActionEvent) {
